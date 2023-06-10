@@ -19,4 +19,9 @@ M.hello = function()
   module.my_first_function()
 end
 
+M.diff = function()
+  local current_buffer_num = vim.api.nvim_get_current_buf()
+  module.diff_buffer_with_register(current_buffer_num, "+")
+end
+
 return M
