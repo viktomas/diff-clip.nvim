@@ -21,7 +21,7 @@ end
 
 M.diff = function()
   local current_buffer_num = vim.api.nvim_get_current_buf()
-  module.diff_buffer_with_register(current_buffer_num, "+")
+  module.diff_visual_with_register(current_buffer_num, "+")
 end
 
 return M
