@@ -14,14 +14,8 @@ M.setup = function(args)
   M.config = vim.tbl_deep_extend("force", M.config, args or {})
 end
 
--- "hello" is a public method for the plugin
-M.hello = function()
-  module.my_first_function()
-end
-
-M.diff = function()
-  local current_buffer_num = vim.api.nvim_get_current_buf()
-  module.diff_visual_with_register(current_buffer_num, "+")
+M.diff = function(opts)
+  module.diff_with_clip(opts, "+")
 end
 
 return M
