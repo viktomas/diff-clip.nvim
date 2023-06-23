@@ -1,9 +1,10 @@
 -- module represents a lua module for the plugin
 local M = {}
 
-local function create_new_buffer_with_visual(fist_line, last_line)
+local function create_new_buffer_with_visual(fist_line, last_line, filetype)
   local visual_lines = vim.api.nvim_buf_get_text(0, fist_line, 1, last_line, -1, {})
   local visual_buffer = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_option(visual_buffer, "filetype", filetype)
 
   for _, visual_line in ipairs(visual_lines) do
     vim.api.nvim_buf_set_lines(visual_buffer, -1, -1, false, { visual_line })
@@ -12,7 +13,7 @@ local function create_new_buffer_with_visual(fist_line, last_line)
   vim.api.nvim_set_current_buf(visual_buffer)
 end
 
-local function open_register_in_split(register)
+local function open_register_in_split(register, filetype)
   vim.cmd.vsplit()
   local register_content = vim.fn.getreg(register)
 
@@ -22,19 +23,21 @@ local function open_register_in_split(register)
   for register_line in (register_content .. "\n"):gmatch("(.-)\n") do
     vim.api.nvim_buf_set_lines(register_buffer, -1, -1, false, { register_line })
   end
+  vim.api.nvim_buf_set_option(register_buffer, "filetype", filetype)
   vim.api.nvim_buf_set_option(register_buffer, "modifiable", false)
 
   vim.api.nvim_set_current_buf(register_buffer)
 end
 
 M.diff_with_clip = function(opts, register)
+  local filetype = vim.api.nvim_buf_get_option(0, "filetype")
   if opts.range ~= 0 then
-    create_new_buffer_with_visual(opts.line1, opts.line2)
+    create_new_buffer_with_visual(opts.line1, opts.line2, filetype)
   end
 
   vim.cmd.diffthis()
 
-  open_register_in_split(register)
+  open_register_in_split(register, filetype)
 
   vim.cmd.diffthis()
 end
